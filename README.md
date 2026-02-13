@@ -1,36 +1,63 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# AI Gym Buddy
 
-## Getting Started
+An AI-powered fitness assistant that helps you plan personalized workout routines, diet recommendations, and sleep/recovery tips based on your goals, schedule, and preferences.
 
-First, run the development server:
+## Setup Instructions
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+1. Clone the repository:
+   ```bash
+   git clone <repo-url>
+   cd copilotx
+   ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. Configure environment variables:
+   - Copy `.env.example` to `.env.local`
+   - Add your `NEXT_PUBLIC_COPILOT_PUBLIC_API_KEY` from [CopilotKit Cloud](https://cloud.copilotkit.ai)
+   - (Optional) Add `GIPHY_API_KEY` from [GIPHY Developers](https://developers.giphy.com) for animated exercise GIFs in the workout plan
+   ```bash
+   cp .env.example .env.local
+   # Edit .env.local and add your keys
+   ```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+3. Install and run:
+   ```bash
+   npm install
+   npm run dev
+   ```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+4. Open [http://localhost:3000](http://localhost:3000)
 
-## Learn More
+## What You Built
 
-To learn more about Next.js, take a look at the following resources:
+- **AI Gym Buddy**: A CopilotKit assistant that creates:
+  - Personalized workout routines based on goals (fat loss, muscle gain, endurance) and available time
+  - Diet plan suggestions based on calories and preferences (vegetarian, vegan, etc.)
+  - Sleep and recovery tips based on sleep hours
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- **One meaningful interaction**: State update via `updateGoal` — when you say "Set my goal to muscle gain", the AI calls the action, updates your state, and the UI reflects it. The state is also exposed to the AI via `useCopilotReadable` for personalized follow-up responses.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- **Generative UI**: `setRoutine` and `dietSuggestion` actions render custom UI (weekly plan cards, meal cards) inline in the chat when the AI generates plans.
 
-## Deploy on Vercel
+- **Animated exercise GIFs**: Each exercise in the workout plan displays a moving GIF demonstrating the movement (via GIPHY API when configured).
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- **Additional actions**: `sleepTips` for recovery advice, `updateGoal` and `setRoutine` for persisting user preferences in React state.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## How AI & CopilotKit Was Used
+
+- **CopilotKit chat UI** (`CopilotSidebar`) for the conversational interface
+- **`useCopilotAction`** to define tools the AI can call: `updateGoal`, `setRoutine`, `dietSuggestion`, `sleepTips`
+- **`useCopilotReadable`** to expose user state (goal, schedule, diet prefs, calories) as context to the AI
+- **AG-UI protocol** via CopilotKit's Direct-to-LLM / Copilot Cloud — no custom backend required
+- **Generative UI** via `render` functions on actions to display workout plans and meal suggestions
+
+## What You'd Improve With More Time
+
+- Computer vision for form correction (posture detection during exercises)
+- Wearable data integration (heart rate, steps)
+- Persistence (localStorage or backend) for saving plans across sessions
+- Push notifications for workout reminders
+- AG-UI agent framework backend (e.g. Mastra, LangGraph) for more complex agent logic
+
+## AI Coding Tools
+
+This project was built with assistance from **Cursor** (AI coding assistant) for scaffolding, CopilotKit integration, component structure, and documentation.
