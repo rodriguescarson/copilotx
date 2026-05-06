@@ -5,10 +5,13 @@ import {
   useContext,
   useState,
   useCallback,
+  useEffect,
+  useRef,
   ReactNode,
 } from "react";
 import { useCopilotReadable } from "@copilotkit/react-core";
 import type { GymState, FitnessGoal, DietPreference, WorkoutDay, CalorieMode, Meal, SleepTip } from "@/types/gym";
+import { loadGymState, saveGymState, clearGymState } from "@/lib/storage";
 
 const defaultState: GymState = {
   goal: "",
@@ -32,12 +35,35 @@ interface GymContextValue {
   setLastDietPlan: (meals: Meal[]) => void;
   setLastSleepTips: (tips: SleepTip[]) => void;
   setState: (updates: Partial<GymState>) => void;
+  clearPlan: () => void;
 }
 
 const GymContext = createContext<GymContextValue | null>(null);
 
 export function GymProvider({ children }: { children: ReactNode }) {
   const [state, setStateInternal] = useState<GymState>(defaultState);
+  const hydratedRef = useRef(false);
+  const saveTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    const stored = loadGymState();
+    if (stored) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- one-shot hydration from localStorage; cannot read in useState initializer without SSR mismatch
+      setStateInternal((prev) => ({ ...prev, ...stored }));
+    }
+    hydratedRef.current = true;
+  }, []);
+
+  useEffect(() => {
+    if (!hydratedRef.current) return;
+    if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current);
+    saveTimeoutRef.current = setTimeout(() => {
+      saveGymState(state);
+    }, 300);
+    return () => {
+      if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current);
+    };
+  }, [state]);
 
   const setState = useCallback((updates: Partial<GymState>) => {
     setStateInternal((prev) => ({ ...prev, ...updates }));
@@ -79,6 +105,11 @@ export function GymProvider({ children }: { children: ReactNode }) {
     setStateInternal((prev) => ({ ...prev, sleepHours: hours }));
   }, []);
 
+  const clearPlan = useCallback(() => {
+    setStateInternal(defaultState);
+    clearGymState();
+  }, []);
+
   useCopilotReadable({
     description:
       "Current plan state: goal, workoutPlan (days with exercises), lastDietPlan (meals), lastSleepTips. dietPref, calories, calorieMode, sleepHours. When user says 'add to my plan' or 'update my plan', use saveFullPlan with the FULL merged plan (existing + new).",
@@ -99,6 +130,7 @@ export function GymProvider({ children }: { children: ReactNode }) {
         setLastDietPlan,
         setLastSleepTips,
         setState,
+        clearPlan,
       }}
     >
       {children}
