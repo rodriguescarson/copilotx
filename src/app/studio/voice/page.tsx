@@ -9,6 +9,9 @@ import {
 } from "react";
 import { useCopilotChat } from "@copilotkit/react-core";
 import { TextMessage, MessageRole } from "@copilotkit/runtime-client-gql";
+import { useRouter } from "next/navigation";
+import { useGym } from "@/context/GymContext";
+import type { CalorieMode, DietPreference } from "@/types/gym";
 import { MicButton, type MicState } from "@/components/studio/voice/MicButton";
 import { Waveform } from "@/components/studio/voice/Waveform";
 import { TranscriptPanel } from "@/components/studio/voice/TranscriptPanel";
@@ -40,6 +43,47 @@ Rules:
 - It is fine to leave fields un-set if they were not mentioned.
 - Do not produce a long text reply. A one-sentence acknowledgement is plenty.`;
 
+const DAY_ALIASES: Record<string, string> = {
+  mon: "Monday", monday: "Monday",
+  tue: "Tuesday", tues: "Tuesday", tuesday: "Tuesday",
+  wed: "Wednesday", wednesday: "Wednesday",
+  thu: "Thursday", thur: "Thursday", thurs: "Thursday", thursday: "Thursday",
+  fri: "Friday", friday: "Friday",
+  sat: "Saturday", saturday: "Saturday",
+  sun: "Sunday", sunday: "Sunday",
+};
+
+function parseSchedule(s: string): Record<string, number> {
+  const lower = s.toLowerCase();
+  const minMatch = lower.match(/(\d+)\s*(min|minute|mins|minutes|m\b)/);
+  const minutes = minMatch ? parseInt(minMatch[1], 10) : 45;
+  const seen = new Set<string>();
+  const out: Record<string, number> = {};
+  for (const [alias, day] of Object.entries(DAY_ALIASES)) {
+    if (seen.has(day)) continue;
+    if (new RegExp(`\\b${alias}\\b`).test(lower)) {
+      out[day] = minutes;
+      seen.add(day);
+    }
+  }
+  return out;
+}
+
+function mapDietPref(s: string): DietPreference {
+  const lower = s.toLowerCase().trim();
+  if (lower === "vegan") return "vegan";
+  if (lower.includes("non") || lower.includes("meat") || lower.includes("chicken") || lower.includes("fish") || lower.includes("pescat")) return "non_vegetarian";
+  if (lower.includes("vegetarian") || lower.includes("veggie") || lower === "veg") return "vegetarian";
+  return s;
+}
+
+function inferCalorieMode(goal: string): CalorieMode {
+  const g = goal.toLowerCase();
+  if (g.includes("muscle") || g.includes("gain") || g.includes("bulk") || g.includes("mass")) return "surplus";
+  if (g.includes("fat") || g.includes("loss") || g.includes("cut") || g.includes("lean")) return "deficit";
+  return "maintenance";
+}
+
 const DEMO_TRANSCRIPT_CHUNKS = [
   "Hey, I'm trying to build muscle this year. ",
   "I can train Monday, Wednesday, and Friday for about 45 minutes. ",
@@ -53,6 +97,9 @@ const getSupportClient = () => detectSpeechSupport().supported;
 const getSupportServer = () => true;
 
 export default function VoicePage() {
+  const router = useRouter();
+  const { setGoal, setSchedule, setDietPref, setSleepHours, setCalorieMode } = useGym();
+  const [applied, setApplied] = useState(false);
   const supportSupported = useSyncExternalStore(
     subscribeNoop,
     getSupportClient,
@@ -188,6 +235,24 @@ export default function VoicePage() {
     else handleStart();
   }, [micState, handleStart, handleStop]);
 
+  const applyToGymPlan = useCallback(
+    (navigate: boolean) => {
+      if (profile.goal) {
+        setGoal(profile.goal);
+        setCalorieMode(inferCalorieMode(profile.goal));
+      }
+      if (profile.schedule) {
+        const parsed = parseSchedule(profile.schedule);
+        if (Object.keys(parsed).length > 0) setSchedule(parsed);
+      }
+      if (profile.dietPref) setDietPref(mapDietPref(profile.dietPref));
+      if (profile.sleepHours != null) setSleepHours(profile.sleepHours);
+      setApplied(true);
+      if (navigate) router.push("/");
+    },
+    [profile, setGoal, setSchedule, setDietPref, setSleepHours, setCalorieMode, router],
+  );
+
   // Demo mode: progressively reveal a fake transcript so screenshot mode works
   // even without mic permission.
   const runDemo = useCallback(async () => {
@@ -303,7 +368,41 @@ export default function VoicePage() {
               </button>
             </section>
 
-            <ProfileCard profile={profile} elapsedMs={elapsedMs} />
+            <div className="flex flex-col gap-4">
+              <ProfileCard profile={profile} elapsedMs={elapsedMs} />
+              {filledAll && (
+                <div className="flex flex-col gap-2 rounded-3xl border border-cyan-400/30 bg-gradient-to-br from-cyan-500/[0.08] via-purple-500/[0.06] to-transparent p-5 backdrop-blur">
+                  <p className="text-xs uppercase tracking-[0.2em] text-cyan-200/80">
+                    Profile ready
+                  </p>
+                  <p className="text-sm text-zinc-300">
+                    Send these values to your gym plan and start training.
+                  </p>
+                  <div className="mt-1 flex flex-col gap-2 sm:flex-row">
+                    <button
+                      type="button"
+                      onClick={() => applyToGymPlan(true)}
+                      className="inline-flex items-center justify-center gap-1.5 rounded-full bg-cyan-300 px-4 py-2 text-sm font-semibold text-zinc-950 transition hover:bg-cyan-200"
+                    >
+                      Apply to my gym plan
+                      <span aria-hidden>→</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => applyToGymPlan(false)}
+                      className="inline-flex items-center justify-center rounded-full border border-white/10 bg-white/[0.04] px-4 py-2 text-sm text-zinc-200 transition hover:bg-white/[0.08]"
+                    >
+                      Save without leaving
+                    </button>
+                  </div>
+                  {applied && (
+                    <p className="text-xs text-emerald-300/90" role="status">
+                      Saved. Open the home tab to see your workout, diet, and sleep tabs.
+                    </p>
+                  )}
+                </div>
+              )}
+            </div>
           </main>
         )}
 
