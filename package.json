@@ -1,7 +1,21 @@
 {
-  "name": "ai-gym-buddy",
+  "name": "copilotx",
   "version": "0.1.0",
   "private": true,
+  "description": "Agentic frontend showcase built on CopilotKit — gym planner, generative dashboard, voice onboarding, and a meta-tool that authors useCopilotAction definitions live.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rodriguescarson/copilotx"
+  },
+  "author": "Carson Rodrigues <rodriguescarson@gmail.com>",
+  "license": "MIT",
+  "keywords": [
+    "copilotkit",
+    "ag-ui",
+    "agentic-ui",
+    "generative-ui",
+    "nextjs"
+  ],
   "scripts": {
     "dev": "next dev",
     "build": "next build",
