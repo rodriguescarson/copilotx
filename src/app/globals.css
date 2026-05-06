@@ -1,26 +1,281 @@
 @import "tailwindcss";
 
+/* ---------------------------------------------------------------------------
+ * copilotx — design system
+ * Direction: dark editorial × athletic performance.
+ * One saturated accent (electric lime), serif display, condensed sans UI.
+ * No zinc/slate flat tones. Real depth, grid lines, generous whitespace.
+ * ------------------------------------------------------------------------- */
+
+@theme {
+  /* ─── color palette ─────────────────────────────────────────────────── */
+  --color-ink-950: #08090b;     /* page base — deep obsidian */
+  --color-ink-900: #0d0f12;     /* card base */
+  --color-ink-850: #111418;     /* elevated card */
+  --color-ink-800: #161a1f;     /* hover surface */
+  --color-ink-700: #1e2229;     /* hairline */
+  --color-ink-600: #2a3038;     /* divider */
+  --color-ink-500: #3a4049;     /* muted border */
+  --color-ink-400: #6b7280;     /* tertiary text */
+  --color-ink-300: #9aa1ac;     /* secondary text */
+  --color-ink-200: #c5c9d1;     /* primary low-contrast */
+  --color-ink-100: #e5e7eb;     /* primary text */
+  --color-ink-50:  #f4f5f7;     /* highest contrast text / paper */
+
+  /* signature accent — electric lime (athletic energy, stadium-light glow) */
+  --color-volt-50:  #f4ffd4;
+  --color-volt-100: #e6ff8a;
+  --color-volt-300: #d9ff3d;    /* primary accent */
+  --color-volt-400: #c4ee20;
+  --color-volt-500: #a3cc15;
+  --color-volt-600: #7a9a0f;
+
+  /* secondary accents (used sparingly for category coding) */
+  --color-ember: #ff6b35;       /* workout / heat */
+  --color-citrus: #ffd166;      /* nutrition / fuel */
+  --color-deep:  #5e9bff;       /* recovery / sleep */
+
+  /* semantic aliases */
+  --color-background: var(--color-ink-950);
+  --color-foreground: var(--color-ink-100);
+  --color-accent: var(--color-volt-300);
+  --color-muted: var(--color-ink-400);
+  --color-border: var(--color-ink-700);
+
+  /* ─── typography ────────────────────────────────────────────────────── */
+  --font-display: "Instrument Serif", "Times New Roman", "Georgia", serif;
+  --font-sans: var(--font-geist-sans), "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), "JetBrains Mono", ui-monospace, monospace;
+}
+
+/* Instrument Serif — characterful editorial display */
+@font-face {
+  font-family: "Instrument Serif";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("https://fonts.gstatic.com/s/instrumentserif/v12/jizDREVItHgc8qDIbSTKq4XIRtnz3D9HfHmWp40.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Instrument Serif";
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: url("https://fonts.gstatic.com/s/instrumentserif/v12/jizBREVItHgc8qDIbSTKq4XIRtnz5BpsXTAk2RQ4lVrI.woff2") format("woff2");
+}
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* ─── motion ────────────────────────────────────────────────────────── */
+  --ease-out-quint: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --dur-fast: 160ms;
+  --dur-base: 280ms;
+  --dur-slow: 520ms;
+
+  /* ─── elevation / shadows ───────────────────────────────────────────── */
+  --shadow-soft: 0 1px 0 rgba(255, 255, 255, 0.03) inset, 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow-card: 0 1px 0 rgba(255, 255, 255, 0.04) inset,
+                 0 8px 24px -12px rgba(0, 0, 0, 0.6),
+                 0 2px 4px rgba(0, 0, 0, 0.3);
+  --shadow-lift: 0 1px 0 rgba(255, 255, 255, 0.06) inset,
+                 0 24px 48px -16px rgba(0, 0, 0, 0.7),
+                 0 8px 16px -8px rgba(0, 0, 0, 0.4);
+  --shadow-glow: 0 0 0 1px rgba(217, 255, 61, 0.3),
+                 0 8px 32px -8px rgba(217, 255, 61, 0.25);
+
+  /* ─── radii ─────────────────────────────────────────────────────────── */
+  --radius-xs: 4px;
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 22px;
+  --radius-xl: 32px;
+
+  /* ─── grid / layout ─────────────────────────────────────────────────── */
+  --grid-line: rgba(255, 255, 255, 0.04);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+* {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html, body {
+  background: var(--color-ink-950);
+  color: var(--color-ink-100);
+  font-family: var(--font-sans);
+  font-feature-settings: "ss01", "cv11";
+  letter-spacing: -0.005em;
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* selection in accent — small but unmistakable signature */
+::selection {
+  background: var(--color-volt-300);
+  color: var(--color-ink-950);
+}
+
+/* ambient page texture — subtle grid, never noisy */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background-image:
+    linear-gradient(to right, var(--grid-line) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--grid-line) 1px, transparent 1px);
+  background-size: 64px 64px;
+  mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, #000 30%, transparent 75%);
+  -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, #000 30%, transparent 75%);
+}
+
+/* ─── typography classes ─────────────────────────────────────────────── */
+.font-display { font-family: var(--font-display); }
+
+.display-headline {
+  font-family: var(--font-display);
+  font-weight: 400;
+  letter-spacing: -0.02em;
+  line-height: 0.95;
+}
+
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--color-ink-400);
+}
+
+/* ─── utility components ─────────────────────────────────────────────── */
+.cx-card {
+  background: linear-gradient(180deg, var(--color-ink-900) 0%, var(--color-ink-850) 100%);
+  border: 1px solid var(--color-ink-700);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+}
+
+.cx-card-flat {
+  background: var(--color-ink-900);
+  border: 1px solid var(--color-ink-700);
+  border-radius: var(--radius-md);
+}
+
+.cx-divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--color-ink-700) 20%, var(--color-ink-700) 80%, transparent);
+}
+
+/* primary accent button */
+.cx-btn-primary {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.875rem 1.5rem;
+  background: var(--color-volt-300);
+  color: var(--color-ink-950);
+  border-radius: 999px;
+  font-weight: 600;
+  font-size: 14px;
+  letter-spacing: -0.01em;
+  transition: transform var(--dur-fast) var(--ease-out-quint),
+              box-shadow var(--dur-base) var(--ease-out-quint);
+  box-shadow: var(--shadow-glow);
+}
+.cx-btn-primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 0 0 1px rgba(217, 255, 61, 0.5),
+              0 12px 40px -8px rgba(217, 255, 61, 0.4);
+}
+.cx-btn-primary:active { transform: translateY(0); }
+
+/* ghost / secondary */
+.cx-btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.875rem 1.25rem;
+  color: var(--color-ink-100);
+  border: 1px solid var(--color-ink-600);
+  border-radius: 999px;
+  font-weight: 500;
+  font-size: 14px;
+  background: transparent;
+  transition: background var(--dur-fast) var(--ease-out-quint),
+              border-color var(--dur-fast) var(--ease-out-quint);
+}
+.cx-btn-ghost:hover {
+  background: var(--color-ink-800);
+  border-color: var(--color-ink-500);
+}
+
+/* nav links + github pill — kept in CSS so hover is a single repaint */
+.cx-nav-link {
+  color: var(--color-ink-300);
+  transition: color var(--dur-fast) var(--ease-out-quint),
+              background var(--dur-fast) var(--ease-out-quint);
+}
+.cx-nav-link:hover,
+.cx-nav-link:focus-visible {
+  color: var(--color-ink-50);
+  background: var(--color-ink-800);
+}
+
+.cx-github-link {
+  border-color: var(--color-ink-700);
+  color: var(--color-ink-200);
+  transition: border-color var(--dur-fast) var(--ease-out-quint),
+              background var(--dur-fast) var(--ease-out-quint);
+}
+.cx-github-link:hover,
+.cx-github-link:focus-visible {
+  border-color: var(--color-ink-500);
+  background: var(--color-ink-800);
+}
+
+/* ─── hero entrance choreography ─────────────────────────────────────── */
+@keyframes cx-fade-up {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes cx-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes cx-shimmer {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 1; }
+}
+
+.cx-stagger > * {
+  opacity: 0;
+  animation: cx-fade-up var(--dur-slow) var(--ease-out-quint) forwards;
+}
+.cx-stagger > *:nth-child(1) { animation-delay: 60ms; }
+.cx-stagger > *:nth-child(2) { animation-delay: 140ms; }
+.cx-stagger > *:nth-child(3) { animation-delay: 220ms; }
+.cx-stagger > *:nth-child(4) { animation-delay: 300ms; }
+.cx-stagger > *:nth-child(5) { animation-delay: 380ms; }
+.cx-stagger > *:nth-child(6) { animation-delay: 460ms; }
+
+.cx-pulse-dot {
+  animation: cx-shimmer 2s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cx-stagger > * { animation: none; opacity: 1; }
+  .cx-pulse-dot { animation: none; }
+  * { transition-duration: 0ms !important; animation-duration: 0ms !important; }
+}
+
+/* CopilotKit sidebar overrides — make it feel native to the dark theme */
+.copilotKitWindow,
+.copilotKitChat {
+  --copilot-kit-primary-color: var(--color-volt-300);
+  --copilot-kit-contrast-color: var(--color-ink-950);
+  --copilot-kit-background-color: var(--color-ink-900);
+  --copilot-kit-secondary-color: var(--color-ink-850);
+  --copilot-kit-secondary-contrast-color: var(--color-ink-100);
+  --copilot-kit-separator-color: var(--color-ink-700);
+  --copilot-kit-muted-color: var(--color-ink-400);
 }

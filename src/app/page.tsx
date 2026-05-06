@@ -2,15 +2,18 @@
 
 import { useState, useEffect } from "react";
 import { CopilotSidebar } from "@copilotkit/react-ui";
+import { Header } from "@/components/Header";
+import { Hero } from "@/components/Hero";
+import { QuickStats } from "@/components/QuickStats";
 import { GoalButtons } from "@/components/GoalButtons";
 import { WorkoutPlanTab } from "@/components/WorkoutPlanTab";
 import { DietPlanTab } from "@/components/DietPlanTab";
 import { SleepTipsTab } from "@/components/SleepTipsTab";
 
 const TABS = [
-  { id: "workout", label: "Workout Plan", content: <WorkoutPlanTab /> },
-  { id: "diet", label: "Diet Plan", content: <DietPlanTab /> },
-  { id: "sleep", label: "Sleep Tips", content: <SleepTipsTab /> },
+  { id: "workout", label: "Workout", numeral: "01", content: <WorkoutPlanTab /> },
+  { id: "diet", label: "Diet", numeral: "02", content: <DietPlanTab /> },
+  { id: "sleep", label: "Sleep", numeral: "03", content: <SleepTipsTab /> },
 ] as const;
 
 const QUICK_SUGGESTIONS = [
@@ -64,55 +67,119 @@ DIET: Specific dish names. vegetarian/vegan/non_vegetarian. surplus for muscle g
 SLEEP: Science-backed tips. Categories: Sleep hygiene, Circadian rhythm, Recovery. Sources: CDC, National Sleep Foundation.`;
 
 export default function Home() {
-  const [activeTab, setActiveTab] = useState<(typeof TABS)[number]["id"]>("workout");
+  const [activeTab, setActiveTab] =
+    useState<(typeof TABS)[number]["id"]>("workout");
   const [mounted, setMounted] = useState(false);
-  useEffect(() => setMounted(true), []);
+  useEffect(() => {
+    // Defer to a microtask so we don't trigger a cascading render inside the
+    // effect body — keeps the mount-gate pattern needed for CopilotSidebar
+    // (it must only render after hydration) without violating the lint rule.
+    const id = setTimeout(() => setMounted(true), 0);
+    return () => clearTimeout(id);
+  }, []);
 
   return (
-    <div className="flex min-h-screen flex-col bg-zinc-50 dark:bg-zinc-950">
-      <header className="border-b border-zinc-200 bg-white px-6 py-4 dark:border-zinc-800 dark:bg-zinc-900">
-        <h1 className="text-xl font-bold">AI Gym Buddy</h1>
-        <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
-          Personalized workout & diet planning
-        </p>
-      </header>
+    <div className="relative flex min-h-screen flex-col">
+      <Header />
 
-      <main className="flex-1 overflow-auto p-6">
-        <section className="mb-6">
-          <h2 className="mb-2 text-sm font-medium text-zinc-600 dark:text-zinc-400">
-            Your goal
+      <main className="relative z-10 mx-auto w-full max-w-[1280px] px-6 lg:px-10">
+        <Hero />
+
+        {/* goal selector — quietly placed under hero */}
+        <section
+          aria-labelledby="goal-heading"
+          className="mt-4 flex flex-wrap items-center gap-x-6 gap-y-3"
+        >
+          <h2
+            id="goal-heading"
+            className="eyebrow"
+            style={{ color: "var(--color-ink-300)" }}
+          >
+            Pick a goal
           </h2>
           <GoalButtons />
         </section>
 
-        <section>
+        {/* divider */}
+        <div className="cx-divider mt-12" aria-hidden />
+
+        {/* live status strip */}
+        <div className="mt-12">
+          <QuickStats />
+        </div>
+
+        {/* plan tabs */}
+        <section
+          id="plan"
+          aria-labelledby="plan-heading"
+          className="mt-16 mb-24"
+        >
+          <div className="mb-6 flex items-end justify-between gap-6">
+            <div>
+              <span className="eyebrow">This week</span>
+              <h2
+                id="plan-heading"
+                className="display-headline mt-2 text-4xl sm:text-5xl"
+                style={{ color: "var(--color-ink-50)" }}
+              >
+                Your plan,{" "}
+                <span style={{ color: "var(--color-volt-300)" }} className="italic">
+                  in three layers
+                </span>
+                .
+              </h2>
+            </div>
+          </div>
+
           <div
-            className="mb-3 flex gap-2 border-b border-zinc-200 dark:border-zinc-700"
+            className="mb-5 flex flex-wrap gap-1 rounded-full border p-1"
             role="tablist"
             aria-label="Plan sections"
+            style={{
+              borderColor: "var(--color-ink-700)",
+              background: "var(--color-ink-900)",
+              width: "fit-content",
+            }}
           >
-            {TABS.map((t) => (
-              <button
-                key={t.id}
-                type="button"
-                onClick={() => setActiveTab(t.id)}
-                role="tab"
-                id={`tab-${t.id}`}
-                aria-selected={activeTab === t.id}
-                aria-controls={`tabpanel-${t.id}`}
-                aria-label={`View ${t.label}`}
-                className={`border-b-2 px-4 py-2 text-sm font-medium transition-colors ${
-                  activeTab === t.id
-                    ? "border-zinc-900 text-zinc-900 dark:border-zinc-100 dark:text-zinc-100"
-                    : "border-transparent text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100"
-                }`}
-              >
-                {t.label}
-              </button>
-            ))}
+            {TABS.map((t) => {
+              const active = activeTab === t.id;
+              return (
+                <button
+                  key={t.id}
+                  type="button"
+                  onClick={() => setActiveTab(t.id)}
+                  role="tab"
+                  id={`tab-${t.id}`}
+                  aria-selected={active}
+                  aria-controls={`tabpanel-${t.id}`}
+                  aria-label={`View ${t.label} plan`}
+                  className="group relative inline-flex items-center gap-2 rounded-full px-4 py-2 text-[13px] font-medium transition-colors"
+                  style={{
+                    color: active
+                      ? "var(--color-ink-950)"
+                      : "var(--color-ink-300)",
+                    background: active ? "var(--color-volt-300)" : "transparent",
+                  }}
+                >
+                  <span
+                    className="font-mono text-[10px] tracking-widest"
+                    style={{
+                      color: active
+                        ? "var(--color-ink-950)"
+                        : "var(--color-ink-400)",
+                      opacity: active ? 0.65 : 1,
+                    }}
+                  >
+                    {t.numeral}
+                  </span>
+                  <span>{t.label}</span>
+                </button>
+              );
+            })}
           </div>
+
           <div
-            className="rounded-lg bg-white p-4 shadow-sm dark:bg-zinc-900"
+            className="cx-card relative overflow-hidden p-6 sm:p-8"
             role="tabpanel"
             id={`tabpanel-${activeTab}`}
             aria-labelledby={`tab-${activeTab}`}
@@ -120,6 +187,24 @@ export default function Home() {
             {TABS.find((t) => t.id === activeTab)?.content}
           </div>
         </section>
+
+        <footer
+          className="border-t pt-8 pb-12 text-[12px]"
+          style={{ borderColor: "var(--color-ink-700)", color: "var(--color-ink-400)" }}
+        >
+          <div className="flex flex-wrap items-center justify-between gap-4 font-mono uppercase tracking-[0.18em]">
+            <span>copilotx — built with copilotkit</span>
+            <a
+              href="https://github.com/rodriguescarson/copilotx"
+              target="_blank"
+              rel="noreferrer"
+              className="hover:underline"
+              style={{ color: "var(--color-ink-200)" }}
+            >
+              github ↗
+            </a>
+          </div>
+        </footer>
       </main>
 
       {mounted && (
@@ -127,9 +212,9 @@ export default function Home() {
           instructions={GYM_BUDDY_INSTRUCTIONS}
           suggestions={QUICK_SUGGESTIONS}
           labels={{
-            title: "AI Gym Buddy",
+            title: "copilotx coach",
             initial:
-              "Hi! I'm your AI Gym Buddy. Tell me your fitness goal, how much time you have, and your diet preferences. I'll help you plan workouts and meals.",
+              "Hi — I'm your copilotx coach. Tell me your goal, the time you have to train, and your diet preferences. I'll build your week.",
           }}
           defaultOpen={false}
         />

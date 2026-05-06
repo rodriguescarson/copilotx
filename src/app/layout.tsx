@@ -14,8 +14,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "AI Gym Buddy",
-  description: "Personalized workout and diet plan assistant",
+  title: "copilotx — train smart, eat sharp, sleep like it's your job",
+  description:
+    "A conversational coach that builds your weekly workout, meal plan, and recovery protocol from one chat. Powered by CopilotKit.",
 };
 
 export default function RootLayout({
