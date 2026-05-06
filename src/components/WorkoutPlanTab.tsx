@@ -2,6 +2,7 @@
 
 import { useGym } from "@/context/GymContext";
 import { ExerciseWithGif } from "@/components/ExerciseWithGif";
+import { ProgressTracker } from "@/components/ProgressTracker";
 import type { WorkoutDay } from "@/types/gym";
 
 export function WorkoutPlanTab() {
@@ -12,6 +13,7 @@ export function WorkoutPlanTab() {
   if (plan.length > 0) {
     return (
       <div className="space-y-4">
+        <ProgressTracker />
         <h3 className="font-semibold">Your Weekly Workout Plan</h3>
         <div className="space-y-3">
           {plan.map((d, i) => (
