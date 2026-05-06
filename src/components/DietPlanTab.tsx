@@ -1,6 +1,7 @@
 "use client";
 
 import { useGym } from "@/context/GymContext";
+import { EmptyTab } from "@/components/EmptyTab";
 import type { Meal } from "@/types/gym";
 
 const DIET_PREFS = [
@@ -128,7 +129,7 @@ export function DietPlanTab() {
         </p>
       </div>
 
-      {lastDietPlan && lastDietPlan.length > 0 && (
+      {lastDietPlan && lastDietPlan.length > 0 ? (
         <div>
           <h4 className="mb-2 font-medium">Last suggested meals</h4>
           <div className="space-y-2">
@@ -137,12 +138,17 @@ export function DietPlanTab() {
             ))}
           </div>
         </div>
+      ) : (
+        <EmptyTab
+          eyebrow="No meals planned"
+          title="Set targets, then ask for dishes you&rsquo;ll actually cook."
+          body="Pick a diet type and calorie mode above. Then tap a starter below — your coach will return real recipes with calories and macros."
+          prompts={[
+            "Suggest 5 vegetarian dinners for a 1800 cal deficit, with ingredients",
+            "Build a non-veg muscle-gain day at 2500 cal — breakfast, lunch, dinner",
+          ]}
+        />
       )}
-
-      <p className="text-sm text-zinc-500 dark:text-zinc-400">
-        Try: &quot;Suggest vegetarian breakfast for calorie deficit&quot; or
-        &quot;Non-veg muscle gain meal plan 2500 cal&quot;
-      </p>
     </div>
   );
 }

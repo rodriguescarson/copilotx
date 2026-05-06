@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { CopilotSidebar } from "@copilotkit/react-ui";
+import { useCopilotChat } from "@copilotkit/react-core";
 import type { Dataset, Widget } from "@/types/dashboard";
 import { DATASET_META, getDataset } from "./sample-data";
 import { DashboardCanvas } from "@/components/studio/dashboard/DashboardCanvas";
@@ -52,6 +53,7 @@ export default function StudioDashboardPage() {
   const [customDatasets, setCustomDatasets] = useState<Record<string, Dataset>>({});
   const [customMeta, setCustomMeta] = useState<typeof DATASET_META>([]);
   const [widgets, setWidgets] = useState<Widget[]>([]);
+  const { isLoading: copilotThinking } = useCopilotChat();
 
   const datasets = useMemo(() => [...DATASET_META, ...customMeta], [customMeta]);
   const activeData = useMemo<Dataset>(() => {
@@ -103,7 +105,7 @@ export default function StudioDashboardPage() {
       />
 
       <header className="border-b border-zinc-900 bg-zinc-950/60 backdrop-blur-md">
-        <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-6 py-5">
+        <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-6 pb-5 pt-16 sm:pt-20">
           <div className="flex items-center gap-3">
             <span className="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-violet-500/30 to-sky-500/30 ring-1 ring-violet-400/30">
               <span className="text-sm">◐</span>
@@ -139,6 +141,7 @@ export default function StudioDashboardPage() {
             onRemove={removeWidget}
             onFilterChange={handleFilterChange}
             onClear={clearWidgets}
+            thinking={copilotThinking}
           />
         </div>
       </main>

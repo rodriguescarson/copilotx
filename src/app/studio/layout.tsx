@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { StudioNav } from "@/components/studio/StudioNav";
 
 export default function StudioLayout({
   children,
@@ -7,11 +8,12 @@ export default function StudioLayout({
 }) {
   return (
     <>
-      <div className="pointer-events-none fixed left-0 right-0 top-0 z-40 flex justify-between px-4 py-3 sm:px-6">
+      <div className="pointer-events-none fixed left-0 right-0 top-0 z-40 flex flex-wrap items-center justify-between gap-2 px-3 py-3 sm:px-6">
         <Link
           href="/"
-          className="pointer-events-auto inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-black/40 px-3 py-1.5 text-xs font-medium text-zinc-200 backdrop-blur transition hover:bg-black/60 hover:text-white"
-          aria-label="Back to home"
+          prefetch
+          className="pointer-events-auto inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-black/50 px-3 py-1.5 text-xs font-medium text-zinc-200 backdrop-blur transition hover:border-white/30 hover:bg-black/70 hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400/60"
+          aria-label="Back to copilotx home"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -26,32 +28,11 @@ export default function StudioLayout({
               clipRule="evenodd"
             />
           </svg>
-          back to copilotx
+          <span>back to copilotx</span>
         </Link>
-        <nav className="pointer-events-auto hidden items-center gap-1 rounded-full border border-white/10 bg-black/40 px-1 py-1 text-xs font-medium text-zinc-300 backdrop-blur sm:flex">
-          <StudioNavLink href="/studio/dashboard">dashboard</StudioNavLink>
-          <StudioNavLink href="/studio/actions">actions</StudioNavLink>
-          <StudioNavLink href="/studio/voice">voice</StudioNavLink>
-        </nav>
+        <StudioNav />
       </div>
       {children}
     </>
-  );
-}
-
-function StudioNavLink({
-  href,
-  children,
-}: {
-  href: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <Link
-      href={href}
-      className="rounded-full px-3 py-1 transition hover:bg-white/10 hover:text-white"
-    >
-      {children}
-    </Link>
   );
 }
