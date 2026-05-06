@@ -1,63 +1,90 @@
-# AI Gym Buddy
+# copilotx
 
-An AI-powered fitness assistant that helps you plan personalized workout routines, diet recommendations, and sleep/recovery tips based on your goals, schedule, and preferences.
+Agentic frontend playground built on CopilotKit. A gym planner, a generative dashboard, a voice onboarding flow, and a meta-tool that writes `useCopilotAction` definitions while you watch.
 
-## Setup Instructions
+## Demo
 
-1. Clone the repository:
-   ```bash
-   git clone <repo-url>
-   cd copilotx
-   ```
+![Hero](docs/media/hero.png)
 
-2. Configure environment variables:
-   - Copy `.env.example` to `.env.local`
-   - Add your `NEXT_PUBLIC_COPILOT_PUBLIC_API_KEY` from [CopilotKit Cloud](https://cloud.copilotkit.ai)
-   - (Optional) Add `GIPHY_API_KEY` from [GIPHY Developers](https://developers.giphy.com) for animated exercise GIFs in the workout plan
-   ```bash
-   cp .env.example .env.local
-   # Edit .env.local and add your keys
-   ```
+| | |
+|---|---|
+| ![Generative dashboard](docs/media/dashboard.gif) | ![Voice onboarding](docs/media/voice.gif) |
+| ![Studio meta-tool](docs/media/studio.gif) | ![Gym buddy](docs/media/gym.gif) |
 
-3. Install and run:
-   ```bash
-   npm install
-   npm run dev
-   ```
+## Links
 
-4. Open [http://localhost:3000](http://localhost:3000)
+- Live: https://copilotx.vercel.app
+- Repo: https://github.com/rodriguescarson/copilotx
 
-## What You Built
+## What this is
 
-- **AI Gym Buddy**: A CopilotKit assistant that creates:
-  - Personalized workout routines based on goals (fat loss, muscle gain, endurance) and available time
-  - Diet plan suggestions based on calories and preferences (vegetarian, vegan, etc.)
-  - Sleep and recovery tips based on sleep hours
+CopilotKit's react-core and react-ui pushed past the basic chat sidebar. Four routes, one shared Copilot runtime, persistent state, and a progress tracker that survives reloads. Idiomatic `useCopilotAction` / `useCopilotReadable` patterns, generative UI via `render`, and AG-UI compatibility against Copilot Cloud.
 
-- **One meaningful interaction**: State update via `updateGoal` — when you say "Set my goal to muscle gain", the AI calls the action, updates your state, and the UI reflects it. The state is also exposed to the AI via `useCopilotReadable` for personalized follow-up responses.
+## Routes
 
-- **Generative UI**: `setRoutine` and `dietSuggestion` actions render custom UI (weekly plan cards, meal cards) inline in the chat when the AI generates plans.
+| Route | What it demonstrates |
+|---|---|
+| `/` | Gym buddy — multi-action planner (`updateGoal`, `setRoutine`, `dietSuggestion`, `sleepTips`) with generative meal/workout cards inline in chat. |
+| `/studio/dashboard` | Generative dashboard — the agent picks chart types and assembles widgets at runtime via `render` actions. |
+| `/studio/actions` | CopilotKit Studio — a meta-tool that writes `useCopilotAction` definitions live, with hot-reloaded preview. |
+| `/studio/voice` | Voice onboarding — speech-driven intake form, streamed transcripts, agent fills fields via actions. |
 
-- **Animated exercise GIFs**: Each exercise in the workout plan displays a moving GIF demonstrating the movement (via GIPHY API when configured).
+## Why CopilotKit
 
-- **Additional actions**: `sleepTips` for recovery advice, `updateGoal` and `setRoutine` for persisting user preferences in React state.
+- **`useCopilotAction`** drives every interaction — gym buddy uses it for state mutation (`updateGoal`), the dashboard uses it for widget assembly, the voice flow uses it to fill form fields from transcripts.
+- **`useCopilotReadable`** exposes user state (goal, schedule, diet prefs, partial form data) to the agent so follow-ups stay in context across routes.
+- **`CopilotSidebar`** is the chat surface on every route — no per-page chrome.
+- **Generative UI via `render`** — `setRoutine`, `dietSuggestion`, and the dashboard widgets render live React components inside chat, not markdown.
+- **AG-UI compatibility** — runs against Copilot Cloud out of the box, no custom backend; the Studio route shows how the same action shape would attach to a Mastra or LangGraph agent.
+- **Persistence layer** — actions write through a localStorage adapter so plans, dashboards, and progress survive reloads.
 
-## How AI & CopilotKit Was Used
+## Setup
 
-- **CopilotKit chat UI** (`CopilotSidebar`) for the conversational interface
-- **`useCopilotAction`** to define tools the AI can call: `updateGoal`, `setRoutine`, `dietSuggestion`, `sleepTips`
-- **`useCopilotReadable`** to expose user state (goal, schedule, diet prefs, calories) as context to the AI
-- **AG-UI protocol** via CopilotKit's Direct-to-LLM / Copilot Cloud — no custom backend required
-- **Generative UI** via `render` functions on actions to display workout plans and meal suggestions
+```bash
+git clone https://github.com/rodriguescarson/copilotx.git
+cd copilotx
+npm install
+```
 
-## What You'd Improve With More Time
+Environment variables:
 
-- Computer vision for form correction (posture detection during exercises)
-- Wearable data integration (heart rate, steps)
-- Persistence (localStorage or backend) for saving plans across sessions
-- Push notifications for workout reminders
-- AG-UI agent framework backend (e.g. Mastra, LangGraph) for more complex agent logic
+```bash
+cp .env.example .env.local
+```
 
-## AI Coding Tools
+```env
+# required — get from https://cloud.copilotkit.ai
+NEXT_PUBLIC_COPILOT_PUBLIC_API_KEY=
 
-This project was built with assistance from **Cursor** (AI coding assistant) for scaffolding, CopilotKit integration, component structure, and documentation.
+# optional — animated exercise demos in gym buddy
+GIPHY_API_KEY=
+```
+
+Run:
+
+```bash
+npm run dev
+```
+
+Open http://localhost:3000.
+
+## Tech stack
+
+- Next.js 16 (App Router)
+- React 19
+- Tailwind CSS 4
+- `@copilotkit/react-core` 1.51
+- `@copilotkit/react-ui` 1.51
+- TypeScript 5
+
+## Roadmap
+
+- AG-UI agent backend (Mastra) for the Studio route
+- Computer-vision form check in gym buddy
+- Wearable data ingestion (heart rate, steps)
+- Push reminders for workout sessions
+- Dashboard export to PNG / shareable link
+
+## Credits
+
+Built with [CopilotKit](https://copilotkit.ai). AI assistance from Cursor and Claude Code during scaffolding, action wiring, and docs.
