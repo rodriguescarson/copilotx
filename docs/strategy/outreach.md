@@ -22,7 +22,7 @@ The re-engagement email went out on 2026-05-06. From here, no artifact means no 
 >
 > Nathan,
 >
-> Shipped a generative dashboard on CopilotKit Cloud over the weekend — agents render charts and tables on the fly from a natural-language brief. Live: copilotx.dev/studio/dashboard. Source: github.com/rodriguescarson/copilotx.
+> Shipped a generative dashboard on CopilotKit Cloud over the weekend — agents render charts and tables on the fly from a natural-language brief. Live: copilotx-chi.vercel.app/studio/dashboard. Source: github.com/rodriguescarson/copilotx.
 >
 > Two more demos land this week (a meta-tool that generates CopilotKit actions, and voice onboarding). If any of this is useful as a reference build for the team, happy to walk Eli through the architecture on a 15.
 >
@@ -38,11 +38,11 @@ The re-engagement email went out on 2026-05-06. From here, no artifact means no 
 
 **Warmer (if Nathan replied to 05-06):**
 
-> Nathan — quick one. The studio build I mentioned is live: copilotx.dev/studio/dashboard. Two more demos this week. If Eli wants the architecture walkthrough, I can do 15 minutes whenever fits.
+> Nathan — quick one. The studio build I mentioned is live: copilotx-chi.vercel.app/studio/dashboard. Two more demos this week. If Eli wants the architecture walkthrough, I can do 15 minutes whenever fits.
 
 **Cooler (if 05-06 got no reply):**
 
-> Nathan — built a generative dashboard on CopilotKit Cloud: copilotx.dev/studio/dashboard. Source on GitHub. Sharing in case it is useful as a reference for the team.
+> Nathan — built a generative dashboard on CopilotKit Cloud: copilotx-chi.vercel.app/studio/dashboard. Source on GitHub. Sharing in case it is useful as a reference for the team.
 
 ### DO NOT
 
@@ -67,7 +67,7 @@ The re-engagement email went out on 2026-05-06. From here, no artifact means no 
 >
 > What surprised me: most of the work was not the LLM. It was making the agent's tool calls idempotent so re-prompts do not duplicate components. CopilotKit's state sync handled the rest.
 >
-> Live: copilotx.dev/studio/dashboard
+> Live: copilotx-chi.vercel.app/studio/dashboard
 > Source: github.com/rodriguescarson/copilotx
 >
 > @CopilotKit
@@ -84,7 +84,7 @@ The re-engagement email went out on 2026-05-06. From here, no artifact means no 
 >
 > The interesting part was constraining the generation. The agent has to produce code that compiles against the CopilotKit runtime, not arbitrary TypeScript. I gave it the type definitions as context and let it use the existing action registry as few-shot examples.
 >
-> Live: copilotx.dev/studio/actions
+> Live: copilotx-chi.vercel.app/studio/actions
 > Source: github.com/rodriguescarson/copilotx
 >
 > @CopilotKit
@@ -101,7 +101,7 @@ The re-engagement email went out on 2026-05-06. From here, no artifact means no 
 >
 > The unlock was treating each form field as a CopilotKit action with its own validation. The agent decides which field to fill next based on what it has, and the user can correct any field by saying "actually, my role is engineering manager."
 >
-> Live: copilotx.dev/studio/voice
+> Live: copilotx-chi.vercel.app/studio/voice
 > Source: github.com/rodriguescarson/copilotx
 >
 > @CopilotKit
