@@ -1,7 +1,7 @@
 "use client";
 
 import { useGym } from "@/context/GymContext";
-import type { SleepTip } from "@/types/gym";
+import { EmptyTab } from "@/components/EmptyTab";
 
 export function SleepTipsTab() {
   const { state } = useGym();
@@ -18,7 +18,7 @@ export function SleepTipsTab() {
         </p>
       </div>
 
-      {tips.length > 0 && (
+      {tips.length > 0 ? (
         <div className="space-y-3">
           <h4 className="font-medium">Evidence-based tips</h4>
           <div className="space-y-2">
@@ -42,12 +42,17 @@ export function SleepTipsTab() {
             ))}
           </div>
         </div>
+      ) : (
+        <EmptyTab
+          eyebrow="No protocol yet"
+          title="Recovery protocols, cited from real research."
+          body="Tell your coach how many hours you currently sleep. They&rsquo;ll return tips grouped by hygiene, circadian rhythm, and recovery — with sources."
+          prompts={[
+            "I sleep 6 hours. Give me science-backed tips with sources",
+            "Build me a wind-down protocol for late-evening screen use",
+          ]}
+        />
       )}
-
-      <p className="text-sm text-zinc-500 dark:text-zinc-400">
-        Try: &quot;Give me science-backed sleep tips for 6 hours sleep&quot; or
-        &quot;Sleep hygiene tips with research&quot;
-      </p>
     </div>
   );
 }

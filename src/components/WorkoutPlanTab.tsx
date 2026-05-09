@@ -3,7 +3,7 @@
 import { useGym } from "@/context/GymContext";
 import { ExerciseWithGif } from "@/components/ExerciseWithGif";
 import { ProgressTracker } from "@/components/ProgressTracker";
-import type { WorkoutDay } from "@/types/gym";
+import { EmptyTab } from "@/components/EmptyTab";
 
 export function WorkoutPlanTab() {
   const { state } = useGym();
@@ -69,12 +69,14 @@ export function WorkoutPlanTab() {
   }
 
   return (
-    <div className="rounded-lg border border-dashed border-zinc-300 bg-zinc-50 p-6 text-center text-zinc-500 dark:border-zinc-600 dark:bg-zinc-900 dark:text-zinc-400">
-      <p>No workout schedule yet.</p>
-      <p className="mt-2 text-sm">
-        Ask the AI: &quot;Create a detailed weekly workout plan for 45 min on
-        Monday, Wednesday, Friday with specific exercises for each day&quot;
-      </p>
-    </div>
+    <EmptyTab
+      eyebrow="No workouts yet"
+      title="Build your week in one chat."
+      body="Tell your coach how many days you can train, your time per session, and your goal — they&rsquo;ll lay out a complete split."
+      prompts={[
+        "Create a 3-day push/pull/legs plan, 45 min each — Mon/Wed/Fri",
+        "I have 30 minutes 4x a week at home, no equipment — build a plan",
+      ]}
+    />
   );
 }

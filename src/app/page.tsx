@@ -9,6 +9,7 @@ import { GoalButtons } from "@/components/GoalButtons";
 import { WorkoutPlanTab } from "@/components/WorkoutPlanTab";
 import { DietPlanTab } from "@/components/DietPlanTab";
 import { SleepTipsTab } from "@/components/SleepTipsTab";
+import { StudioShelf } from "@/components/StudioShelf";
 
 const TABS = [
   { id: "workout", label: "Workout", numeral: "01", content: <WorkoutPlanTab /> },
@@ -112,7 +113,7 @@ export default function Home() {
         <section
           id="plan"
           aria-labelledby="plan-heading"
-          className="mt-16 mb-24"
+          className="mt-16"
         >
           <div className="mb-6 flex items-end justify-between gap-6">
             <div>
@@ -188,8 +189,10 @@ export default function Home() {
           </div>
         </section>
 
+        <StudioShelf />
+
         <footer
-          className="border-t pt-8 pb-12 text-[12px]"
+          className="mt-24 border-t pt-8 pb-12 text-[12px]"
           style={{ borderColor: "var(--color-ink-700)", color: "var(--color-ink-400)" }}
         >
           <div className="flex flex-wrap items-center justify-between gap-4 font-mono uppercase tracking-[0.18em]">

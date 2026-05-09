@@ -132,6 +132,12 @@ export function ExerciseWithGif({ exercise, compact = false }: ExerciseWithGifPr
   const renderMedia = (imgClass: string, fallbackClass: string) => {
     if (gifUrl) {
       return (
+        // GIPHY returns animated GIFs at unknown intrinsic dimensions per
+        // search term — wrapping these in next/image with `fill` would force
+        // a layout pass per card and disable the platform's native GIF
+        // playback. The native <img> with object-cover + lazy loading is the
+        // right primitive here. Silencing the lint rule is intentional.
+        // eslint-disable-next-line @next/next/no-img-element
         <img
           src={gifUrl}
           alt={`${searchTerm} exercise demonstration`}

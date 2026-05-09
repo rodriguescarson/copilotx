@@ -310,7 +310,7 @@ export default function VoicePage() {
         transcript={finalText || interim}
       />
 
-      <div className="relative mx-auto flex min-h-screen max-w-6xl flex-col gap-8 px-6 py-10 lg:py-14">
+      <div className="relative mx-auto flex min-h-screen max-w-6xl flex-col gap-8 px-6 pb-10 pt-20 sm:pt-24 lg:pb-14">
         <header className="flex items-baseline justify-between">
           <div>
             <p className="text-xs uppercase tracking-[0.2em] text-zinc-500">

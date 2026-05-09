@@ -1,7 +1,17 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { codeToHtml } from "shiki";
+
+// Shiki is heavy (~80kB+ of WASM/JSON for a single language). We dynamic-import
+// it lazily on first highlight so the studio page stays light on initial load.
+type CodeToHtml = (typeof import("shiki"))["codeToHtml"];
+let codeToHtmlPromise: Promise<CodeToHtml> | null = null;
+function loadHighlighter(): Promise<CodeToHtml> {
+  if (!codeToHtmlPromise) {
+    codeToHtmlPromise = import("shiki").then((m) => m.codeToHtml);
+  }
+  return codeToHtmlPromise;
+}
 
 interface CodePaneProps {
   code: string;
@@ -27,10 +37,13 @@ export function CodePane({ code, onCopy, onTryIt, generating }: CodePaneProps) {
 
   useEffect(() => {
     let cancelled = false;
-    codeToHtml(display, {
-      lang: "tsx",
-      theme: "github-dark-default",
-    })
+    loadHighlighter()
+      .then((codeToHtml) =>
+        codeToHtml(display, {
+          lang: "tsx",
+          theme: "github-dark-default",
+        }),
+      )
       .then((out) => {
         if (!cancelled) setHtml(out);
       })

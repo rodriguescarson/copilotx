@@ -1,7 +1,6 @@
 "use client";
 
 import { useCallback, useMemo, useRef, useState } from "react";
-import Link from "next/link";
 import { useCopilotAction, useCopilotChat } from "@copilotkit/react-core";
 import { TextMessage, MessageRole } from "@copilotkit/runtime-client-gql";
 import { CodePane } from "@/components/studio/actions/CodePane";
@@ -276,37 +275,28 @@ export default function StudioActionsPage() {
 
   return (
     <div className="min-h-screen bg-zinc-100 text-zinc-900 dark:bg-zinc-950 dark:text-zinc-50">
-      <header className="border-b border-zinc-200 bg-white px-6 py-5 dark:border-zinc-800 dark:bg-zinc-950">
-        <div className="mx-auto flex max-w-[1400px] items-center justify-between gap-4">
-          <div>
-            <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-zinc-500">
-              Studio · /actions
-            </p>
-            <h1 className="mt-1 text-2xl font-semibold tracking-tight">
-              Author a CopilotKit action.
-            </h1>
-            <p className="mt-1 max-w-2xl text-sm text-zinc-600 dark:text-zinc-400">
-              Describe what you want in plain English. The Director writes a
-              real{" "}
-              <code className="rounded bg-zinc-100 px-1 py-0.5 font-mono text-[12px] text-zinc-800 dark:bg-zinc-800 dark:text-zinc-200">
-                useCopilotAction
-              </code>{" "}
-              for you. Try it live in the sandbox on the right, then copy the
-              snippet straight into your project.
-            </p>
-          </div>
-          <Link
-            href="/"
-            className="rounded-lg border border-zinc-200 px-3 py-2 text-sm text-zinc-700 transition hover:border-zinc-400 hover:bg-zinc-50 dark:border-zinc-800 dark:text-zinc-300 dark:hover:border-zinc-600 dark:hover:bg-zinc-900"
-          >
-            ← Back home
-          </Link>
+      <header className="border-b border-zinc-200 bg-white px-6 pb-5 pt-16 dark:border-zinc-800 dark:bg-zinc-950 sm:pt-20">
+        <div className="mx-auto max-w-[1400px]">
+          <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-zinc-500">
+            Studio · /actions
+          </p>
+          <h1 className="mt-1 text-2xl font-semibold tracking-tight">
+            Author a CopilotKit action.
+          </h1>
+          <p className="mt-1 max-w-2xl text-sm text-zinc-600 dark:text-zinc-400">
+            Describe what you want in plain English. The Director writes a real{" "}
+            <code className="rounded bg-zinc-100 px-1 py-0.5 font-mono text-[12px] text-zinc-800 dark:bg-zinc-800 dark:text-zinc-200">
+              useCopilotAction
+            </code>{" "}
+            for you. Try it live in the sandbox on the right, then copy the
+            snippet straight into your project.
+          </p>
         </div>
       </header>
 
       <main className="mx-auto max-w-[1400px] p-4 md:p-6">
-        <div className="grid gap-4 md:gap-5 lg:grid-cols-[minmax(0,340px)_minmax(0,1fr)_minmax(0,420px)]">
-          <div className="min-h-[560px]">
+        <div className="grid gap-4 md:gap-5 lg:grid-cols-[minmax(0,340px)_minmax(0,1fr)_minmax(0,420px)] lg:[&>*]:min-h-[560px]">
+          <div>
             <PromptPane
               onGenerate={generate}
               generating={isLoading}
@@ -316,7 +306,7 @@ export default function StudioActionsPage() {
             />
           </div>
 
-          <div className="min-h-[560px]">
+          <div>
             <CodePane
               code={active?.spec.code ?? ""}
               onCopy={copyCode}
@@ -325,7 +315,7 @@ export default function StudioActionsPage() {
             />
           </div>
 
-          <div className="min-h-[560px]">
+          <div>
             <SandboxPane
               spec={active?.spec ?? null}
               invocations={active?.invocations ?? []}
